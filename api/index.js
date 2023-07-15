@@ -1,13 +1,15 @@
 const express = require('express')
-const cors = require('cors')
+const cors = require('cors') //used for error with network sending credentials
 const mongoose = require('mongoose')
 const User = require('./models/user')
 const bcrypt = require('bcryptjs') //password encryption
 const app = express()
+const jwt = require('jsonwebtoken')
 
 const salt = bcrypt.genSaltSync(10)//needed to make bcrypt work
+const secret = "hdfhsdhfjasdhjfsdahfsdhdf"
 
-app.use(cors())
+app.use(cors({credentials:true, origin:'http://localhost:3000'}))
 app.use(express.json())
 
 mongoose.connect('mongodb+srv://newsapp:eM9QFIHWyEz2Wrtu@cluster0.e8evabe.mongodb.net/?retryWrites=true&w=majority')
@@ -21,13 +23,27 @@ app.post('/register', async (req,res) => {
         })
         res.json(userDoc)
     }   catch(e) {
-        console.log(e)
+        console.log(e) //test console.log ----delete later -aj
         res.status(400).json(e) //Error handling if user is not unique
     }
-    
-    
+     
+})
+
+app.post('/login', async (req, res) => {
+    const {username, password} = req.body
+    const userDoc = await User.findOne({username}) // grabs username
+    const passOk = bcrypt.compareSync(password, userDoc.password) //check encrypted password
+    if(passOk){
+        //user gets logged in
+        jwt.sign({username,id:userDoc._id}, secret, {}, (err,token) => {
+            if(err) throw err
+            res.cookie('token', token).json('ok') //sends back a cookie
+        })
+    } else{
+        res.status(400).json('Wrong Username or Password')
+    }
 })
 app.listen(4000)
 
-//eM9QFIHWyEz2Wrtu
-//mongodb+srv://newsapp:eM9QFIHWyEz2Wrtu@cluster0.e8evabe.mongodb.net/?retryWrites=true&w=majority
+//eM9QFIHWyEz2Wrtu --- mongo password - delete later - aj
+//mongodb+srv://newsapp:eM9QFIHWyEz2Wrtu@cluster0.e8evabe.mongodb.net/?retryWrites=true&w=majority ---delete later -- aj

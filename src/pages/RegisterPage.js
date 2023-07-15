@@ -3,8 +3,9 @@ import { useState } from "react"
 export default function RegisterPage (){
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
+    
     async function register(ev) {
-      ev.preventDefault()
+      ev.preventDefault() 
        const response = await fetch('http://localhost:4000/register', {
             method: 'POST',
             body: JSON.stringify({username,password}),
@@ -13,11 +14,12 @@ export default function RegisterPage (){
         if (response.status === 200) { 
             alert("success")
         } else{
-            alert('fail')
+            alert('fail') //fail if inputs are not unique
         }
      }
+     //input form for registering 
     return (
-    <form className="register" onSubmit={register}>
+    <form className="register" onSubmit={register}> 
         <h1>Register</h1>
         <input type='text' 
                placeholder='username' 
