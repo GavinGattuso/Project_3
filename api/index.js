@@ -43,6 +43,11 @@ app.post('/login', async (req, res) => {
         res.status(400).json('Wrong Username or Password')
     }
 })
+
+
+app.get('/profile', (req,res) => {  //endpoint for profile (checking if logged in)
+    res.json(req.cookies)
+})
 app.listen(4000)
 
 //eM9QFIHWyEz2Wrtu --- mongo password - delete later - aj

@@ -17,7 +17,7 @@ export default function LoginPage () {
         if (response.ok){
             setRedirect(true)
         } else {
-            alert('Wrong Username or Pass')
+            alert('Wrong Username or Password')
         }
     }
     // form for login
